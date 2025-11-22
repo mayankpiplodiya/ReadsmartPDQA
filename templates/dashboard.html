@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · ReadSmart{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-lg-8">
+    <div class="card-soft">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h4 class="mb-0">Dashboard</h4>
+          <div class="small-muted">Logged in as <strong>{{ session.get('user') }}</strong></div>
+        </div>
+        <div>
+          <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('history') }}">History</a>
+        </div>
+      </div>
+
+      <form method="POST" action="{{ url_for('dashboard') }}" enctype="multipart/form-data">
+        <div class="mb-3">
+          <label class="form-label">Paste text</label>
+          <textarea name="text" class="form-control" rows="10" placeholder="Paste the text you want to summarize...">{{ request.form.get('text','') }}</textarea>
+        </div>
+
+        <div class="mb-3 d-flex gap-2 align-items-center">
+          <input type="file" name="file" class="form-control form-control-sm" style="max-width:260px;">
+          <button class="btn btn-primary" type="submit">Summarize</button>
+        </div>
+
+        <div class="small-muted">Summarization uses the app's summarizer and displays readability.</div>
+      </form>
+    </div>
+
+    {% if summary %}
+    <div class="card-soft result-box mt-3">
+      <div class="d-flex justify-content-between align-items-start mb-2">
+        <div>
+          <h5 class="mb-1">Summary</h5>
+          {% if readability is not none %}
+            <div class="small-muted">Readability: {{ readability_label(readability) }}</div>
+          {% endif %}
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-sm btn-outline-secondary" onclick="copySummary('dashboard-summary')">Copy</button>
+          <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#dashboard-summary-collapse" aria-expanded="false" aria-controls="dashboard-summary-collapse">Show more</button>
+        </div>
+      </div>
+
+      <div id="dashboard-summary-collapse" class="collapse show">
+        <div id="dashboard-summary" style="white-space:normal; max-height:420px; overflow:auto;">
+          {% set parts = (summary or "").split('\n\n') %}
+          {% for p in parts %}
+            {% if p.strip() %}
+              <p style="margin-bottom:0.9rem;">{{ p }}</p>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card-soft">
+      <h6>Account</h6>
+      <p class="mb-1"><strong>{{ session.get('user') }}</strong></p>
+      <p class="small-muted mb-0">Use History to revisit saved summaries.</p>
+      <div class="mt-3">
+        <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('logout') }}">Logout</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function copySummary(elemId) {
+  const el = document.getElementById(elemId);
+  if (!el) return;
+  const ps = el.querySelectorAll('p');
+  let text = '';
+  if (ps && ps.length) {
+    text = Array.from(ps).map(p => p.innerText.trim()).join('\n\n');
+  } else {
+    text = el.innerText.trim();
+  }
+  navigator.clipboard.writeText(text).then(() => {
+    alert('Summary copied to clipboard');
+  }).catch(() => {
+    alert('Copy failed — try selecting the text manually.');
+  });
+}
+</script>
+{% endblock %}
