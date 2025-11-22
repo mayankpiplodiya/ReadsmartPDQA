@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{% block title %}ReadSmart{% endblock %}</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --accent: #4f46e5;
+      --muted: #6b7280;
+      --card-bg: #ffffff;
+      --radius: 12px;
+    }
+    body {
+      background: linear-gradient(135deg,#eef2ff,#fffaf0);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      color: #0f172a;
+    }
+    .brand { font-weight:700; color:var(--card-bg); text-decoration:none; }
+    header.header {
+      background: linear-gradient(90deg,var(--accent), #4338ca);
+      padding: 12px 0;
+      box-shadow: 0 8px 24px rgba(2,6,23,0.06);
+    }
+    .container-main { max-width: 980px; margin: 28px auto; padding: 0 16px; }
+    .card-soft {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 30px rgba(2,6,23,0.06);
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+    .small-muted { font-size:0.95rem; color:var(--muted); }
+    footer.small { color: var(--muted); margin-top: 18px; text-align:center; }
+
+    @media (max-width:720px) {
+      .container-main { padding: 0 12px; }
+    }
+  </style>
+
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <header class="header">
+    <div class="container-main d-flex align-items-center justify-content-between">
+      <a class="brand" href="{{ url_for('dashboard') }}">📘 ReadSmart</a>
+      <nav>
+        {% if session.get('user') %}
+          <a class="btn btn-sm btn-outline-light me-2" href="{{ url_for('dashboard') }}">Dashboard</a>
+          <a class="btn btn-sm btn-outline-light me-2" href="{{ url_for('history') }}">History</a>
+          <a class="btn btn-sm btn-outline-light" href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+          <a class="btn btn-sm btn-outline-light me-2" href="{{ url_for('login') }}">Login</a>
+          <a class="btn btn-sm btn-outline-light" href="{{ url_for('signup') }}">Signup</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <main class="container-main">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="card-soft mb-3">
+            <div class="small-muted">{{ message }}</div>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+
+    <footer class="small mt-4">
+      © ReadSmart — Demo
+    </footer>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>
