@@ -1,0 +1,8 @@
+flask
+textstat
+python-docx
+PyMuPDF
+google-generativeai
+transformers
+torch
+python-dotenv
