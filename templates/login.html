@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Login · ReadSmart{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <div class="card-soft text-center">
+      <h3 class="mb-2">Welcome back</h3>
+      <p class="small-muted mb-3">Sign in with username & password.</p>
+
+      <form method="POST" action="{{ url_for('login') }}">
+        <div class="mb-3 text-start">
+          <label class="form-label">Username</label>
+          <input name="username" class="form-control" placeholder="username" required autofocus>
+        </div>
+        <div class="mb-3 text-start">
+          <label class="form-label">Password</label>
+          <input name="password" type="password" class="form-control" placeholder="password" required>
+        </div>
+
+        {% if error %}
+          <div class="alert alert-danger py-2">{{ error }}</div>
+        {% endif %}
+
+        <div class="d-grid gap-2">
+          <button class="btn btn-primary" type="submit">Login</button>
+        </div>
+      </form>
+
+      <p class="small-muted mt-3 mb-0">Demo credentials: <strong>admin / admin</strong></p>
+      <p class="mt-2 small-muted">New here? <a href="{{ url_for('signup') }}">Create an account</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}
