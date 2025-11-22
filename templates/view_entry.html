@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}View Entry · ReadSmart{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-lg-8">
+    <div class="card-soft mb-3">
+      <div class="d-flex justify-content-between align-items-start mb-2">
+        <div>
+          <h4 class="mb-0">Summary Details</h4>
+          <div class="small-muted">Saved at {{ entry.created_at }}</div>
+        </div>
+        <div>
+          <a class="btn btn-outline-secondary btn-sm me-2" href="{{ url_for('history') }}">Back</a>
+          <form action="{{ url_for('resummarize_entry', entry_id=entry.id) }}" method="post" style="display:inline;">
+            <button class="btn btn-secondary btn-sm" type="submit">Re-summarize</button>
+          </form>
+          <form action="{{ url_for('delete_entry', entry_id=entry.id) }}" method="post" style="display:inline;" onsubmit="return confirm('Delete this entry?');">
+            <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <h6 class="mb-1">Original Text</h6>
+        <div style="white-space:pre-wrap; max-height:360px; overflow:auto; border-radius:8px; padding:10px; background:#fbfbff;">{{ entry.text }}</div>
+      </div>
+
+      <div>
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <div>
+            <h6 class="mb-1">Summary</h6>
+            {% if entry.readability is not none %}
+              <div class="small-muted">Readability: {{ readability_label(entry.readability) }}</div>
+            {% endif %}
+          </div>
+          <div class="d-flex gap-2">
+            <button class="btn btn-sm btn-outline-secondary" onclick="copySummary('view-summary-{{ entry.id }}')">Copy</button>
+            <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#view-summary-collapse-{{ entry.id }}" aria-expanded="false">Show more</button>
+          </div>
+        </div>
+
+        <div id="view-summary-collapse-{{ entry.id }}" class="collapse show">
+          <div id="view-summary-{{ entry.id }}" style="white-space:normal; border-radius:8px; padding:10px; background:#ffffff;">
+            {% set parts = (entry.summary or "").split('\n\n') %}
+            {% for p in parts %}
+              {% if p.strip() %}
+                <p style="margin-bottom:0.9rem;">{{ p }}</p>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card-soft">
+      <h6>Meta</h6>
+      <p class="small-muted mb-1"><strong>Saved at</strong>: {{ entry.created_at }}</p>
+      <p class="small-muted mb-1"><strong>ID</strong>: {{ entry.id }}</p>
+      <p class="small-muted mb-1"><strong>Readability</strong>: {{ entry.readability or 'N/A' }}</p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function copySummary(elemId) {
+  const el = document.getElementById(elemId);
+  if (!el) return;
+  const ps = el.querySelectorAll('p');
+  let text = '';
+  if (ps && ps.length) {
+    text = Array.from(ps).map(p => p.innerText.trim()).join('\n\n');
+  } else {
+    text = el.innerText.trim();
+  }
+  navigator.clipboard.writeText(text).then(() => {
+    alert('Summary copied to clipboard');
+  }).catch(() => {
+    alert('Copy failed — try selecting the text manually.');
+  });
+}
+</script>
+{% endblock %}
