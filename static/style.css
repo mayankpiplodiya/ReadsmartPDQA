@@ -1,0 +1,99 @@
+/* static/styles.css - minimal modern styling */
+:root{
+  --bg:#f6f8fa;
+  --card:#ffffff;
+  --accent:#2563eb;
+  --muted:#6b7280;
+  --success:#10b981;
+  --danger:#ef4444;
+  --radius:12px;
+  --shadow: 0 6px 18px rgba(15,23,42,0.06);
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+body{
+  background: linear-gradient(180deg,#f8fafc 0%, var(--bg) 100%);
+  color:#0f172a;
+  margin:0;
+  padding:0;
+}
+.header{
+  background: linear-gradient(90deg, rgba(37,99,235,0.95), rgba(79,70,229,0.95));
+  color:white;
+  padding:18px 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  box-shadow: 0 4px 14px rgba(2,6,23,0.06);
+}
+.header .brand{ font-weight:700; font-size:1.15rem; letter-spacing:0.2px;}
+.container{
+  max-width:980px;
+  margin:28px auto;
+  padding:22px;
+}
+.card{
+  background:var(--card);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:20px;
+  margin-bottom:18px;
+}
+.form-row{ display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+.input, textarea, select{
+  width:100%;
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid #e6e9ef;
+  font-size:0.95rem;
+  outline:none;
+}
+textarea{ min-height:160px; resize:vertical; }
+.btn{
+  background:var(--accent);
+  color:white;
+  padding:10px 14px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+  font-weight:600;
+}
+.btn.secondary{ background:transparent; color:var(--accent); border:1px solid #e6ecff; }
+.small{ font-size:0.85rem; color:var(--muted); }
+.result-box{
+  border-radius:12px;
+  padding:16px;
+  background:linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  border:1px solid #eef2ff;
+}
+.flash{
+  padding:10px 12px;
+  border-radius:10px;
+  margin-bottom:12px;
+}
+.flash.success{ background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.16); color:var(--success); }
+.flash.danger{ background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.12); color:var(--danger); }
+.footer{
+  text-align:center;
+  color:var(--muted);
+  font-size:0.85rem;
+  margin-top:18px;
+}
+
+/* responsive */
+@media (max-width:720px){
+  .container{ padding:12px; margin:14px; }
+  .form-row{ flex-direction:column; }
+}
+.auth-box{
+  background:var(--card);
+  padding:24px;
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  max-width:400px;
+  margin:40px auto;
+  text-align:center;
+}
+.auth-box h2{ margin-bottom:20px; }
+.auth-form input{
+  margin-bottom:16px;
+}
