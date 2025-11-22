@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}View History · ReadSmart{% endblock %}
+
+{% block content %}
+<div class="card-soft">
+  <h4 class="mb-3">All Summaries</h4>
+
+  {% set rows = history if history is defined and (history is iterable) and not history.get('id', none) else (histories if histories is defined else ( [history] if history is defined else [] )) %}
+  {% if rows %}
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Original</th>
+            <th>Summary</th>
+            <th>Readability</th>
+            <th>Saved at</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in rows %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td style="max-width:280px; white-space:pre-wrap;">{{ r.text[:300] }}{% if r.text|length > 300 %}...{% endif %}</td>
+            <td style="max-width:280px; white-space:pre-wrap;">{{ r.summary[:300] }}{% if r.summary|length > 300 %}...{% endif %}</td>
+            <td>{{ r.readability or 'N/A' }}</td>
+            <td>{{ r.created_at }}</td>
+            <td><a class="btn btn-sm btn-outline-secondary" href="{{ url_for('view_entry', entry_id=r.id) }}">Open</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="alert alert-info">No saved summaries yet.</div>
+  {% endif %}
+  <div class="mt-3"><a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Back to Dashboard</a></div>
+</div>
+{% endblock %}
