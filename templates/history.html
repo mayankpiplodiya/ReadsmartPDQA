@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}History · ReadSmart{% endblock %}
+
+{% block content %}
+<div class="card-soft">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h4 class="mb-0">History</h4>
+      <div class="small-muted">Saved summaries (most recent first)</div>
+    </div>
+    <div>
+      <a class="btn btn-primary btn-sm" href="{{ url_for('dashboard') }}">New Summary</a>
+    </div>
+  </div>
+
+  {% set list_hist = histories if histories is defined else (history if history is defined else []) %}
+  {% if list_hist %}
+    {% for entry in list_hist %}
+      <div class="card-soft mb-3">
+        <div class="d-flex justify-content-between">
+          <div class="small-muted">{{ entry.created_at }}</div>
+          <div class="small-muted">ID: {{ entry.id }}</div>
+        </div>
+
+        <div class="mt-2">
+          <strong>Original:</strong>
+          <div style="white-space:pre-wrap; max-height:120px; overflow:auto;">{{ entry.text }}</div>
+        </div>
+
+        <div class="mt-2">
+          <div class="d-flex justify-content-between align-items-start mb-1">
+            <div><strong>Summary</strong></div>
+            <div class="d-flex gap-2">
+              <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('view_entry', entry_id=entry.id) }}">Open</a>
+              <form method="post" action="{{ url_for('resummarize_entry', entry_id=entry.id) }}" style="display:inline;">
+                <button class="btn btn-sm btn-outline-secondary">Re-summarize</button>
+              </form>
+              <form method="post" action="{{ url_for('delete_entry', entry_id=entry.id) }}" style="display:inline;" onsubmit="return confirm('Delete this entry?');">
+                <button class="btn btn-sm btn-danger">Delete</button>
+              </form>
+            </div>
+          </div>
+
+          {% if entry.readability is not none %}
+            <div class="small-muted mb-1">Readability: {{ readability_label(entry.readability) }}</div>
+          {% endif %}
+
+          <div id="hist-summary-collapse-{{ entry.id }}" class="collapse show">
+            <div id="hist-summary-{{ entry.id }}" style="white-space:normal; max-height:200px; overflow:auto;">
+              {% set parts = (entry.summary or "").split('\n\n') %}
+              {% for p in parts %}
+                {% if p.strip() %}
+                  <p style="margin-bottom:0.8rem;">{{ p }}</p>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="card-soft text-center">
+      <p class="mb-0 small-muted">No history yet. Create a summary to see it here.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
